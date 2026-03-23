@@ -1,31 +1,38 @@
 """
 base_page.py
 ------------
+TC-83 | Successful Login with Valid Username and Password
 BasePage: Reusable WebDriver interactions following Single Responsibility Principle.
 All page objects extend this class (Open/Closed + Liskov Substitution).
+SOLID: S - Single Responsibility | O - Open/Closed | L - Liskov Substitution
 """
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from utils.logger import Logger
+from utils.config import Config
 
 logger = Logger.get_logger(__name__)
 
 
 class BasePage:
-    """Base class for all Page Objects. Encapsulates common WebDriver interactions."""
+    """
+    Base class for all Page Objects. Encapsulates common WebDriver interactions.
+    TC-83 | Successful Login with Valid Username and Password
+    Implements Open/Closed + Liskov Substitution principles.
+    """
 
     def __init__(self, driver):
         self.driver = driver
-        self._wait = WebDriverWait(driver, timeout=10)
+        self._wait = WebDriverWait(driver, timeout=Config.EXPLICIT_WAIT)
 
     # ------------------------------------------------------------------ #
     #  Navigation                                                          #
     # ------------------------------------------------------------------ #
     def open(self, url: str) -> None:
         """Navigate to the given URL."""
-        logger.info(f"Navigating to: {url}")
+        logger.info(f"[TC-83] Navigating to: {url}")
         self.driver.get(url)
 
     def get_current_url(self) -> str:
@@ -43,10 +50,10 @@ class BasePage:
         """Wait for visibility and return a single web element."""
         try:
             element = self._wait.until(EC.visibility_of_element_located(locator))
-            logger.debug(f"Element found: {locator}")
+            logger.debug(f"[TC-83] Element found: {locator}")
             return element
         except TimeoutException:
-            logger.error(f"Element not found (timeout): {locator}")
+            logger.error(f"[TC-83] Element not found (timeout): {locator}")
             raise
 
     def find_elements(self, locator: tuple) -> list:
@@ -56,14 +63,14 @@ class BasePage:
     def click(self, locator: tuple) -> None:
         """Click a web element after waiting for it to be clickable."""
         element = self._wait.until(EC.element_to_be_clickable(locator))
-        logger.info(f"Clicking element: {locator}")
+        logger.info(f"[TC-83] Clicking element: {locator}")
         element.click()
 
     def type_text(self, locator: tuple, text: str) -> None:
         """Clear a field and type the given text."""
         element = self.find_element(locator)
         element.clear()
-        logger.info(f"Typing '{text}' into: {locator}")
+        logger.info(f"[TC-83] Typing '{text}' into: {locator}")
         element.send_keys(text)
 
     def get_text(self, locator: tuple) -> str:
@@ -88,4 +95,14 @@ class BasePage:
             self._wait.until(EC.presence_of_element_located(locator))
             return True
         except TimeoutException:
+            return False
+
+    def wait_for_url_contains(self, fragment: str, timeout: int = None) -> bool:
+        """Wait until current URL contains the given fragment."""
+        _timeout = timeout or Config.EXPLICIT_WAIT
+        try:
+            WebDriverWait(self.driver, _timeout).until(EC.url_contains(fragment))
+            return True
+        except TimeoutException:
+            logger.warning(f"[TC-83] URL did not contain '{fragment}' within {_timeout}s")
             return False
