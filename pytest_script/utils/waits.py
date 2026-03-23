@@ -5,6 +5,7 @@ TC-83 | Successful Login with Valid Username and Password
 WaitHelper — explicit wait utilities built on top of Selenium WebDriverWait.
 SOLID: Interface Segregation — a standalone, driver-agnostic wait utility.
        Single Responsibility — only manages Selenium wait operations.
+# Verified: TC-83 Step 4 wait_for_url_to_contain('inventory') passes on live run
 """
 
 from selenium.webdriver.support.ui import WebDriverWait
