@@ -9,6 +9,18 @@
 | **Priority** | High |
 | **Target URL** | https://www.saucedemo.com/ |
 | **Browser** | Chrome (headless by default) |
+| **qTest Status** | ⚠️ 403 returned on update (read-only project) — metadata documented inline |
+
+---
+
+## ✅ Live Browser Execution Results
+
+| Step | Action | Result |
+|---|---|---|
+| **Step 1** | Launched Chrome → Navigated to `https://www.saucedemo.com/` | ✅ Title: `Swag Labs` — all 3 fields visible |
+| **Step 2** | Entered `standard_user` in `id=user-name` | ✅ Field value confirmed |
+| **Step 3** | Entered `secret_sauce` in `id=password` | ✅ `type=password` masked input confirmed |
+| **Step 4** | Clicked `Login` button | ✅ Redirected → `inventory.html` — Header: `Products` — 6 items — Cart visible |
 
 ---
 
