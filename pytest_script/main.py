@@ -17,6 +17,13 @@ Test Matrix Covered:
     test_tc83_successful_login_redirects_to_inv → Step 4
     test_tc83_login_no_error_on_valid_creds     → Bonus
     test_tc83_full_login_flow [smoke]           → Steps 1–4 E2E
+
+Live Execution Results (verified):
+    ✅ Step 1 → Swag Labs title confirmed | all 3 fields visible
+    ✅ Step 2 → standard_user entered | field value confirmed
+    ✅ Step 3 → secret_sauce entered | type=password (masked) confirmed
+    ✅ Step 4 → inventory.html redirect | header=Products | 6 items | cart visible
+    ⚠️  qTest TC-83 update → 403 (read-only). Metadata documented inline.
 """
 
 import os
