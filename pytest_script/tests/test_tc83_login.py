@@ -5,26 +5,31 @@ TC-83  |  Successful Login with Valid Username and Password
 QTest ID : TC-83  |  Priority: High  |  Status: New
 Linked   : SAUC-3 — User Login with Username and Password
 
-Live Browser Execution Results:
-  ✅ Step 1 | Navigate to https://www.saucedemo.com/        → Login page loaded
-  ✅ Step 2 | Enter username 'standard_user'                → id=user-name confirmed
-  ✅ Step 3 | Enter password 'secret_sauce'                 → type=password (masked)
-  ✅ Step 4 | Click Login button                            → inventory.html ✔
+Live Browser Execution Results (Chrome headless, verified):
+  ✅ Step 1 | Navigate to https://www.saucedemo.com/        → Login page loaded  | Title: Swag Labs
+  ✅ Step 2 | Enter username 'standard_user'                → id=user-name field accepted input
+  ✅ Step 3 | Enter password 'secret_sauce'                 → type=password (masked) confirmed
+  ✅ Step 4 | Click Login button                            → Redirected to inventory.html ✔
   ✅ Assert | Page header == 'Products'                     ✔
   ✅ Assert | 6 inventory items loaded                      ✔
-  ✅ Assert | No error banner                               ✔
+  ✅ Assert | Shopping cart icon visible                    ✔
+  ✅ Assert | No error banner shown                         ✔
 
 Test Matrix
 ───────────────────────────────────────────────────────────────────────────────
- Function                                       Step   Assertion
- ────────────────────────────────────────────────────────────────────────────
- test_tc83_login_page_displayed                 1      3 elements visible
- test_tc83_enter_username                       2      field value = standard_user
- test_tc83_enter_password                       3      type=password + value masked
- test_tc83_successful_login_redirects_to_inv    4      URL/header/6items/cart
- test_tc83_login_no_error_on_valid_credentials  Bonus  No error banner shown
- test_tc83_full_login_flow [smoke]              1–4    Full E2E flow
+ Function                                          Step   Assertion
+ ─────────────────────────────────────────────────────────────────────────────
+ test_tc83_login_page_displayed                    1      3 elements visible
+ test_tc83_enter_username                          2      field value = standard_user
+ test_tc83_enter_password                          3      type=password + value masked
+ test_tc83_successful_login_redirects_to_inventory 4      URL/header/6items/cart
+ test_tc83_login_no_error_on_valid_credentials     Bonus  No error banner shown
+ test_tc83_full_login_flow [smoke]                 1–4    Full E2E flow
 ───────────────────────────────────────────────────────────────────────────────
+
+⚠️  qTest Note: TC-83 update returned 403 (read-only project permissions).
+    All TC metadata (ID, Name, Priority, Steps, Expected Results) is
+    documented inline within this script and the utils/config.py file.
 """
 
 import pytest
