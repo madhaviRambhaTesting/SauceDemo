@@ -1,18 +1,22 @@
 # ──────────────────────────────────────────────────────────────────────────
-#  Requirements — TC-83 Pytest Automation Suite
+#  requirements.txt
+#  TC-83 | Successful Login with Valid Username and Password
+#  SauceDemo Pytest Automation Suite — SOLID + POM Architecture
+#
 #  Install: pip install -r requirements.txt
+#  Python : >= 3.9 recommended
 # ──────────────────────────────────────────────────────────────────────────
 
-# ── Selenium ──────────────────────────────────────────────────────────── #
-selenium>=4.18.1
+# ── Selenium WebDriver ────────────────────────────────────────────────── #
+selenium>=4.18.1                 # Core browser automation
 
-# ── WebDriver Manager (auto-downloads ChromeDriver / GeckoDriver) ──────── #
-webdriver-manager>=4.0.1
+# ── WebDriver Manager ────────────────────────────────────────────────── #
+webdriver-manager>=4.0.1         # Auto-downloads ChromeDriver / GeckoDriver
 
-# ── Pytest ────────────────────────────────────────────────────────────── #
-pytest>=7.4.0
-pytest-html>=4.1.1          # HTML report generation (--html flag)
+# ── Pytest Core ──────────────────────────────────────────────────────── #
+pytest>=7.4.0                    # Test runner
+pytest-html>=4.1.1               # HTML report (--html + --self-contained-html)
 
-# ── Optional but recommended ──────────────────────────────────────────── #
-pytest-xdist>=3.5.0         # Parallel test execution (-n auto)
-pytest-rerunfailures>=13.0  # Auto-retry flaky tests (--reruns N)
+# ── Pytest Plugins (optional but recommended) ────────────────────────── #
+pytest-xdist>=3.5.0              # Parallel execution: pytest -n auto
+pytest-rerunfailures>=13.0       # Auto-retry flaky tests: --reruns 2
