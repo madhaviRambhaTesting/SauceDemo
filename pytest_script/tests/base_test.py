@@ -1,8 +1,10 @@
 """
 base_test.py
 ------------
+TC-83 | Successful Login with Valid Username and Password
 BaseTest — shared setup / teardown lifecycle for all test classes.
-Manages WebDriver instantiation and teardown (Single Responsibility).
+Single Responsibility: manages only WebDriver lifecycle for tests.
+Dependency Inversion: depends on DriverFactory abstraction.
 """
 
 import pytest
@@ -12,23 +14,34 @@ from utils.logger import Logger
 
 logger = Logger.get_logger(__name__)
 
+TC_ID = "TC-83"
+
 
 class BaseTest:
     """
-    Parent class for all test classes.
-    Provides `driver`, `login_page`, and `inventory_page` via pytest fixtures
-    defined in conftest.py. Direct instantiation of pages is handled here
-    so individual test classes stay clean.
+    Parent class for all TC-83 test classes.
+    Provides `driver` fixture integration via conftest.py.
+    Implements: Single Responsibility + Dependency Inversion (SOLID).
+
+    Note: WebDriver is created and destroyed per test function
+    via conftest.py `driver` fixture (function scope).
     """
 
     @pytest.fixture(autouse=True)
     def setup_teardown(self, driver):
         """
-        Receive the `driver` fixture from conftest, store it on self,
-        and guarantee browser teardown after each test.
+        TC-83: Receive the `driver` fixture from conftest.py,
+        store it on `self`, then yield control to the test.
+        Driver quit is handled exclusively in conftest.py — no double-quit.
         """
         self.driver = driver
-        logger.info(f"[Setup] Browser ready | Test: {self.__class__.__name__}")
+        logger.info(
+            f"[{TC_ID}] [Setup] Browser ready → "
+            f"Test: {self.__class__.__name__} | "
+            f"Browser: {Config.BROWSER} (headless={Config.HEADLESS})"
+        )
         yield
-        logger.info(f"[Teardown] Closing browser | Test: {self.__class__.__name__}")
-        # Driver quit is handled in conftest fixture; no double-quit needed.
+        logger.info(
+            f"[{TC_ID}] [Teardown] Test complete → "
+            f"{self.__class__.__name__} | Driver quit via conftest"
+        )
