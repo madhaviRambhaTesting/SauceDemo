@@ -1,8 +1,10 @@
 """
 waits.py
 --------
+TC-83 | Successful Login with Valid Username and Password
 WaitHelper — explicit wait utilities built on top of Selenium WebDriverWait.
-Interface Segregation: a standalone, driver-agnostic wait utility.
+SOLID: Interface Segregation — a standalone, driver-agnostic wait utility.
+       Single Responsibility — only manages Selenium wait operations.
 """
 
 from selenium.webdriver.support.ui import WebDriverWait
@@ -13,11 +15,14 @@ from utils.logger import Logger
 
 logger = Logger.get_logger(__name__)
 
+TC_ID = "TC-83"
+
 
 class WaitHelper:
     """
-    Provides explicit-wait methods to complement BasePage interactions.
+    TC-83 explicit-wait helper to complement BasePage interactions.
     Instantiate with a WebDriver instance; all timeouts default to Config.EXPLICIT_WAIT.
+    SOLID: Interface Segregation — focused solely on wait operations.
     """
 
     def __init__(self, driver, timeout: int = Config.EXPLICIT_WAIT):
@@ -26,51 +31,56 @@ class WaitHelper:
         self._wait    = WebDriverWait(driver, timeout)
 
     # ------------------------------------------------------------------ #
-    #  Presence / Visibility                                               #
+    #  Presence / Visibility Waits                                         #
     # ------------------------------------------------------------------ #
     def wait_for_element_visible(self, locator: tuple):
         """Wait until the element is visible; return the element."""
-        logger.debug(f"Waiting for element to be visible: {locator}")
+        logger.debug(f"[{TC_ID}] Waiting for visibility: {locator}")
         return self._wait.until(EC.visibility_of_element_located(locator))
 
     def wait_for_element_present(self, locator: tuple):
         """Wait until the element is present in the DOM; return the element."""
-        logger.debug(f"Waiting for element to be present: {locator}")
+        logger.debug(f"[{TC_ID}] Waiting for presence: {locator}")
         return self._wait.until(EC.presence_of_element_located(locator))
 
     def wait_for_element_clickable(self, locator: tuple):
         """Wait until the element is clickable; return the element."""
-        logger.debug(f"Waiting for element to be clickable: {locator}")
+        logger.debug(f"[{TC_ID}] Waiting for clickable: {locator}")
         return self._wait.until(EC.element_to_be_clickable(locator))
 
     def wait_for_element_invisible(self, locator: tuple) -> bool:
         """Wait until the element is no longer visible; return True on success."""
-        logger.debug(f"Waiting for element to be invisible: {locator}")
+        logger.debug(f"[{TC_ID}] Waiting for invisibility: {locator}")
         return self._wait.until(EC.invisibility_of_element_located(locator))
 
     # ------------------------------------------------------------------ #
-    #  URL / Title                                                         #
+    #  URL / Title Waits                                                   #
     # ------------------------------------------------------------------ #
     def wait_for_url_to_contain(self, fragment: str) -> bool:
-        """Wait until the current URL contains the given fragment."""
-        logger.debug(f"Waiting for URL to contain: '{fragment}'")
+        """
+        TC-83 Step 4: Wait until the current URL contains 'inventory'.
+        Confirms successful redirect after login.
+        """
+        logger.debug(f"[{TC_ID}] Waiting for URL to contain: '{fragment}'")
         return self._wait.until(EC.url_contains(fragment))
 
     def wait_for_title_to_contain(self, title_fragment: str) -> bool:
         """Wait until the page title contains the given string."""
-        logger.debug(f"Waiting for title to contain: '{title_fragment}'")
+        logger.debug(f"[{TC_ID}] Waiting for title to contain: '{title_fragment}'")
         return self._wait.until(EC.title_contains(title_fragment))
 
     # ------------------------------------------------------------------ #
-    #  Safe checks (return bool, no exception)                             #
+    #  Safe Checks (return bool, never raise)                              #
     # ------------------------------------------------------------------ #
     def is_element_visible_after_wait(self, locator: tuple) -> bool:
-        """Return True if visible within timeout, False otherwise."""
+        """Return True if element is visible within timeout, False otherwise."""
         try:
             self.wait_for_element_visible(locator)
             return True
         except TimeoutException:
-            logger.warning(f"Element not visible after {self._timeout}s: {locator}")
+            logger.warning(
+                f"[{TC_ID}] Element NOT visible after {self._timeout}s: {locator}"
+            )
             return False
 
     def is_url_containing_after_wait(self, fragment: str) -> bool:
@@ -78,5 +88,7 @@ class WaitHelper:
         try:
             return self.wait_for_url_to_contain(fragment)
         except TimeoutException:
-            logger.warning(f"URL did not contain '{fragment}' after {self._timeout}s")
+            logger.warning(
+                f"[{TC_ID}] URL did not contain '{fragment}' after {self._timeout}s"
+            )
             return False
