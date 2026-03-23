@@ -8,6 +8,9 @@ Fixture scope: 'function' — fresh browser per test ensures:
   - Clean cookies / session state for every test
   - Isolation between TC-83 steps
   - No cross-test contamination
+
+⚠️  qTest Note: TC-83 returned 403 (read-only project permissions) on update.
+    TC metadata is embedded inline (config.py + test_tc83_login.py).
 """
 
 import os
