@@ -1,0 +1,4 @@
+Branch: pytest_script
+
+This file was added on branch 'pytest_script' to create a commit distinct from 'main'.
+It records that the branch was created to contain the pytest_script test suite.
