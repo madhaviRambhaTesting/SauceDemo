@@ -5,6 +5,7 @@ BaseTest — shared setup / teardown lifecycle for all test classes.
 Manages WebDriver instantiation and teardown (Single Responsibility).
 """
 
+# tests/base_test.py — TC-83 | SauceDemo Login Automation Suite
 import pytest
 from utils.driver_factory import DriverFactory
 from utils.config import Config
