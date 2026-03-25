@@ -5,6 +5,7 @@ InventoryPage POM — post-login dashboard (Products page).
 Extends BasePage (Open/Closed Principle).
 """
 
+# pages/inventory_page.py — TC-83 | SauceDemo Login Automation Suite
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 from utils.logger import Logger
