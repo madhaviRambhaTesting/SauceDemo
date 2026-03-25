@@ -4,6 +4,7 @@
 # ──────────────────────────────────────────────────────────────────────────
 
 # ── Selenium ──────────────────────────────────────────────────────────── #
+# TC-83 | SauceDemo Login Automation Suite — Python Dependencies
 selenium>=4.18.1
 
 # ── WebDriver Manager (auto-downloads ChromeDriver / GeckoDriver) ──────── #
