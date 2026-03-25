@@ -5,6 +5,7 @@ WaitHelper — explicit wait utilities built on top of Selenium WebDriverWait.
 Interface Segregation: a standalone, driver-agnostic wait utility.
 """
 
+# utils/waits.py — TC-83 | SauceDemo Login Automation Suite
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
