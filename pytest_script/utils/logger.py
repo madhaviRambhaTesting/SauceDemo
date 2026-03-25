@@ -1,51 +1,44 @@
-"""
-logger.py
----------
-Logger — structured, colour-friendly logging helper.
-Interface Segregation: a single focused utility with no external coupling.
-"""
+# utils/logger.py — TC-83 | SauceDemo Login Automation Suite
 
 import logging
-import sys
+import os
+from datetime import datetime
 
 
-class Logger:
-    """Factory for consistently configured Python loggers."""
+def get_logger(name: str = "pytest_saucedemo") -> logging.Logger:
+    """
+    Returns a configured logger instance with file and console handlers.
+    Logs are saved to logs/ directory with a timestamped filename.
+    """
+    log_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "logs")
+    os.makedirs(log_dir, exist_ok=True)
 
-    _FORMAT = "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"
-    _DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+    log_filename = os.path.join(
+        log_dir, f"test_run_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+    )
 
-    @staticmethod
-    def get_logger(name: str, level: int = logging.INFO) -> logging.Logger:
-        """
-        Return a named logger with a StreamHandler attached.
+    logger = logging.getLogger(name)
+    if logger.handlers:
+        return logger  # Avoid duplicate handlers
 
-        If the logger already has handlers (e.g., called twice with the
-        same name), they are reused to avoid duplicate log lines.
+    logger.setLevel(logging.DEBUG)
 
-        Parameters
-        ----------
-        name : str
-            Logger name, typically ``__name__`` of the calling module.
-        level : int
-            Logging level (default: ``logging.INFO``).
+    # File handler
+    fh = logging.FileHandler(log_filename)
+    fh.setLevel(logging.DEBUG)
 
-        Returns
-        -------
-        logging.Logger
-        """
-        logger = logging.getLogger(name)
+    # Console handler
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
 
-        if not logger.handlers:
-            logger.setLevel(level)
-            handler = logging.StreamHandler(sys.stdout)
-            handler.setLevel(level)
-            formatter = logging.Formatter(
-                fmt=Logger._FORMAT,
-                datefmt=Logger._DATE_FORMAT,
-            )
-            handler.setFormatter(formatter)
-            logger.addHandler(handler)
-            logger.propagate = False
+    formatter = logging.Formatter(
+        "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+    fh.setFormatter(formatter)
+    ch.setFormatter(formatter)
 
-        return logger
+    logger.addHandler(fh)
+    logger.addHandler(ch)
+
+    return logger
