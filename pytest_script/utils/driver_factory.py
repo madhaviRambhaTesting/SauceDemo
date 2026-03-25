@@ -5,6 +5,7 @@ DriverFactory — creates and configures Chrome / Firefox WebDriver instances.
 Interface Segregation: sole responsibility is driver lifecycle creation.
 """
 
+# utils/driver_factory.py — TC-83 | SauceDemo Login Automation Suite
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
