@@ -1,91 +1,100 @@
-"""
-base_page.py
-------------
-BasePage: Reusable WebDriver interactions following Single Responsibility Principle.
-All page objects extend this class (Open/Closed + Liskov Substitution).
-"""
+# pages/base_page.py — TC-83 | SauceDemo Login Automation Suite
 
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
-from utils.logger import Logger
+import os
+from datetime import datetime
+from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.common.exceptions import NoSuchElementException
 
-logger = Logger.get_logger(__name__)
+from utils.config import Config
+from utils.logger import get_logger
+from utils.waits import WaitHelper
+
+logger = get_logger("BasePage")
 
 
 class BasePage:
-    """Base class for all Page Objects. Encapsulates common WebDriver interactions."""
+    """
+    Base class for all Page Object Models.
+    Provides reusable methods for element interactions, navigation,
+    screenshots, and assertions — eliminating code duplication across POMs.
+    """
 
-    def __init__(self, driver):
+    def __init__(self, driver: WebDriver):
         self.driver = driver
-        self._wait = WebDriverWait(driver, timeout=10)
+        self.wait = WaitHelper(driver)
+        os.makedirs(Config.SCREENSHOTS_DIR, exist_ok=True)
 
-    # ------------------------------------------------------------------ #
-    #  Navigation                                                          #
-    # ------------------------------------------------------------------ #
-    def open(self, url: str) -> None:
-        """Navigate to the given URL."""
-        logger.info(f"Navigating to: {url}")
-        self.driver.get(url)
+    # ── Navigation ─────────────────────────────────────────────────────────────
+
+    def open(self, url: str = None):
+        target = url or Config.BASE_URL
+        logger.info(f"Navigating to: {target}")
+        self.driver.get(target)
 
     def get_current_url(self) -> str:
-        """Return the browser's current URL."""
         return self.driver.current_url
 
     def get_page_title(self) -> str:
-        """Return the page <title> text."""
         return self.driver.title
 
-    # ------------------------------------------------------------------ #
-    #  Element interactions                                                #
-    # ------------------------------------------------------------------ #
+    # ── Element Finders ────────────────────────────────────────────────────────
+
     def find_element(self, locator: tuple):
-        """Wait for visibility and return a single web element."""
-        try:
-            element = self._wait.until(EC.visibility_of_element_located(locator))
-            logger.debug(f"Element found: {locator}")
-            return element
-        except TimeoutException:
-            logger.error(f"Element not found (timeout): {locator}")
-            raise
+        logger.debug(f"Finding element: {locator}")
+        return self.wait.wait_for_element_visible(locator)
 
-    def find_elements(self, locator: tuple) -> list:
-        """Return all matching elements (no wait for each)."""
-        return self.driver.find_elements(*locator)
+    def find_clickable(self, locator: tuple):
+        logger.debug(f"Finding clickable element: {locator}")
+        return self.wait.wait_for_element_clickable(locator)
 
-    def click(self, locator: tuple) -> None:
-        """Click a web element after waiting for it to be clickable."""
-        element = self._wait.until(EC.element_to_be_clickable(locator))
+    # ── Actions ────────────────────────────────────────────────────────────────
+
+    def click(self, locator: tuple):
+        element = self.find_clickable(locator)
         logger.info(f"Clicking element: {locator}")
         element.click()
 
-    def type_text(self, locator: tuple, text: str) -> None:
-        """Clear a field and type the given text."""
+    def enter_text(self, locator: tuple, text: str):
         element = self.find_element(locator)
         element.clear()
-        logger.info(f"Typing '{text}' into: {locator}")
+        logger.info(f"Entering text '{text}' into: {locator}")
         element.send_keys(text)
 
     def get_text(self, locator: tuple) -> str:
-        """Return the visible text of an element."""
-        return self.find_element(locator).text
+        element = self.find_element(locator)
+        text = element.text
+        logger.debug(f"Got text '{text}' from: {locator}")
+        return text
+
+    def is_element_displayed(self, locator: tuple) -> bool:
+        try:
+            return self.find_element(locator).is_displayed()
+        except Exception:
+            return False
 
     def get_attribute(self, locator: tuple, attribute: str) -> str:
-        """Return the value of the given attribute of an element."""
-        return self.find_element(locator).get_attribute(attribute)
+        element = self.find_element(locator)
+        return element.get_attribute(attribute)
 
-    def is_element_visible(self, locator: tuple) -> bool:
-        """Return True if the element is visible on the page."""
-        try:
-            self._wait.until(EC.visibility_of_element_located(locator))
-            return True
-        except TimeoutException:
-            return False
+    # ── Screenshot ─────────────────────────────────────────────────────────────
 
-    def is_element_present(self, locator: tuple) -> bool:
-        """Return True if the element exists in the DOM (not necessarily visible)."""
-        try:
-            self._wait.until(EC.presence_of_element_located(locator))
-            return True
-        except TimeoutException:
-            return False
+    def take_screenshot(self, name: str = "screenshot") -> str:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = os.path.join(Config.SCREENSHOTS_DIR, f"{name}_{timestamp}.png")
+        self.driver.save_screenshot(filename)
+        logger.info(f"Screenshot saved: {filename}")
+        return filename
+
+    # ── Assertions ─────────────────────────────────────────────────────────────
+
+    def assert_url_contains(self, partial_url: str):
+        self.wait.wait_for_url_contains(partial_url)
+        assert partial_url in self.get_current_url(), (
+            f"Expected URL to contain '{partial_url}', got '{self.get_current_url()}'"
+        )
+
+    def assert_element_visible(self, locator: tuple, message: str = ""):
+        assert self.is_element_displayed(locator), (
+            message or f"Element {locator} is not visible on the page."
+        )
