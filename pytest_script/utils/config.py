@@ -5,6 +5,7 @@ Central configuration: URL, credentials, browser, and timeout settings.
 Interface Segregation — Config is a focused, single-purpose utility.
 """
 
+# utils/config.py — TC-83 | SauceDemo Login Automation Suite
 import os
 
 
