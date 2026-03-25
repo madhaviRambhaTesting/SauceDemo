@@ -1,51 +1,42 @@
+# main.py — TC-83 | SauceDemo Login Automation Suite
+
 """
-main.py
--------
-Entry point: discovers and runs the TC-83 test suite,
-then generates a self-contained HTML report at reports/pytest_script.html.
+Entry point for the TC-83 Pytest automation suite.
+Executes all TC-83 tests and generates an HTML report at:
+    reports/pytest_script.html
 """
 
-import os
+import subprocess
 import sys
-import pytest
-from utils.config import Config
-from utils.logger import Logger
+import os
+from utils.logger import get_logger
 
-logger = Logger.get_logger(__name__)
+logger = get_logger("main")
 
 
-def main() -> int:
-    """Run pytest programmatically and return the exit code."""
+def main():
+    os.makedirs("reports", exist_ok=True)
+    os.makedirs("screenshots", exist_ok=True)
+    os.makedirs("logs", exist_ok=True)
 
-    # Ensure the reports directory exists
-    os.makedirs(Config.REPORT_DIR, exist_ok=True)
-    report_path = os.path.join(Config.REPORT_DIR, Config.REPORT_FILE)
+    logger.info("Starting TC-83 Pytest execution via main.py ...")
 
-    logger.info("=" * 60)
-    logger.info(f"  Starting test suite: {Config.TC_ID} — {Config.TC_NAME}")
-    logger.info(f"  Target URL : {Config.BASE_URL}")
-    logger.info(f"  Browser    : {Config.BROWSER} (headless={Config.HEADLESS})")
-    logger.info(f"  Report     : {report_path}")
-    logger.info("=" * 60)
+    result = subprocess.run(
+        [
+            sys.executable, "-m", "pytest",
+            "tests/test_login_page.py",
+            "-v",
+            "--tb=short",
+            "--html=reports/pytest_script.html",
+            "--self-contained-html",
+            "-m", "tc83",
+        ],
+        capture_output=False,
+    )
 
-    args = [
-        "tests/test_tc83_login.py",      # Test module
-        "-v",                            # Verbose output
-        "--tb=short",                    # Short traceback on failure
-        f"--html={report_path}",         # HTML report path
-        "--self-contained-html",         # Single-file report (no external assets)
-        "--capture=sys",                 # Capture stdout/stderr per test
-    ]
-
-    exit_code = pytest.main(args)
-
-    if exit_code == 0:
-        logger.info(f"✅  All tests PASSED — Report: {report_path}")
-    else:
-        logger.warning(f"❌  Some tests FAILED (exit code {exit_code}) — Report: {report_path}")
-
-    return exit_code
+    logger.info(f"Pytest finished with exit code: {result.returncode}")
+    sys.exit(result.returncode)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
