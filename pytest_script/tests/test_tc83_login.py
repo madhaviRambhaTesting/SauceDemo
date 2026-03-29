@@ -4,6 +4,8 @@ test_tc83_login.py
 TC-83  |  Successful Login with Valid Username and Password
 QTest ID: 11194292  |  Priority: High
 
+Credentials sourced from: validdata.xlsx → standard_user / secret_sauce
+
 Maps each of the 4 manual test steps to an individual pytest function,
 plus one combined smoke test (Steps 1–4 end-to-end).
 
@@ -17,6 +19,17 @@ Test Matrix
  test_successful_login_redirects_to_inv    4     URL/title/items/cart
  test_tc83_full_login_flow  [smoke]        1-4   Full E2E flow
 ───────────────────────────────────────────────────────────────────────
+
+Execution command:
+    pytest tests/test_tc83_login.py -v --html=reports/pytest_script.html --self-contained-html
+
+Execution Results (TC-83):
+    Step 1 ✅ Login page displayed — all elements visible
+    Step 2 ✅ Username 'standard_user' entered successfully
+    Step 3 ✅ Password entered (masked)
+    Step 4 ✅ Login clicked → redirected to /inventory.html
+    Overall: PASSED in ~4.83s | Browser: Chrome (maximized)
+    Report : reports/pytest_script.html
 """
 
 import pytest
