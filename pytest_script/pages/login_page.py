@@ -3,6 +3,10 @@ login_page.py
 -------------
 LoginPage POM — locators + login actions for https://www.saucedemo.com/
 Extends BasePage (Open/Closed Principle).
+
+TC-83 Credentials (from validdata.xlsx):
+    USERNAME: standard_user
+    PASSWORD: secret_sauce
 """
 
 from selenium.webdriver.common.by import By
