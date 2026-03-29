@@ -3,6 +3,10 @@ config.py
 ---------
 Central configuration: URL, credentials, browser, and timeout settings.
 Interface Segregation — Config is a focused, single-purpose utility.
+
+TC-83 Credentials (sourced from validdata.xlsx):
+    USERNAME : standard_user
+    PASSWORD : secret_sauce
 """
 
 import os
