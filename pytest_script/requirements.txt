@@ -1,5 +1,7 @@
 # ──────────────────────────────────────────────────────────────────────────
 #  Requirements — TC-83 Pytest Automation Suite
+#  Test: Successful Login with Valid Username and Password
+#  Credentials: standard_user / secret_sauce (from validdata.xlsx)
 #  Install: pip install -r requirements.txt
 # ──────────────────────────────────────────────────────────────────────────
 
@@ -12,6 +14,9 @@ webdriver-manager>=4.0.1
 # ── Pytest ────────────────────────────────────────────────────────────── #
 pytest>=7.4.0
 pytest-html>=4.1.1          # HTML report generation (--html flag)
+
+# ── Excel Data Reader (validdata.xlsx) ───────────────────────────────── #
+openpyxl>=3.1.2             # Read credentials from validdata.xlsx
 
 # ── Optional but recommended ──────────────────────────────────────────── #
 pytest-xdist>=3.5.0         # Parallel test execution (-n auto)
