@@ -3,6 +3,12 @@ inventory_page.py
 -----------------
 InventoryPage POM — post-login dashboard (Products page).
 Extends BasePage (Open/Closed Principle).
+
+TC-83 Step 4 assertion target:
+    URL      : https://www.saucedemo.com/inventory.html
+    Title    : Products
+    Items    : 6 inventory cards
+    Cart     : Shopping cart icon visible
 """
 
 from selenium.webdriver.common.by import By
