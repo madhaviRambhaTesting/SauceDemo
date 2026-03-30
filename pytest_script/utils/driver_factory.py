@@ -20,7 +20,15 @@ logger = Logger.get_logger(__name__)
 
 
 class DriverFactory:
-    """Factory that produces configured Selenium WebDriver instances."""
+    """
+    Factory that produces configured Selenium WebDriver instances.
+
+    Updated for TC-83 (Parameterized Multi-User Login):
+    - Supports Chrome and Firefox browsers
+    - Headless mode configurable via Config.HEADLESS
+    - Window size set to 1920x1080 for consistent test execution
+    - Used by conftest.py driver fixture for all 5 valid user scenarios
+    """
 
     @staticmethod
     def get_driver(browser: str = Config.BROWSER,
