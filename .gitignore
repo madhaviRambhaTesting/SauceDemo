@@ -1,0 +1,52 @@
+# ===========================================================================
+# .gitignore — SauceDemo TC-96 pytest project
+# ===========================================================================
+
+# Python byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# pytest / test output
+.pytest_cache/
+.cache/
+
+# Reports — HTML files generated at runtime (keep directory, ignore files)
+reports/*.html
+reports/*.xml
+reports/*.json
+
+# Screenshots — generated at runtime (keep .gitkeep, ignore PNGs)
+reports/screenshots/*.png
+reports/screenshots/*.jpg
+
+# Logs — generated at runtime
+logs/
+*.log
+
+# Allure results
+allure-results/
+allure-report/
+
+# Environment / secrets
+.env
+.env.*
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
