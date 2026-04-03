@@ -1,23 +1,32 @@
-# ──────────────────────────────────────────────────────────────────────────
-#  Requirements — TC-83 Pytest Automation Suite
-#  Test: Successful Login with Valid Username and Password
-#  Credentials: standard_user / secret_sauce (from validdata.xlsx)
-#  Install: pip install -r requirements.txt
-# ──────────────────────────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+#  requirements.txt — TC-83 Pytest Automation Suite
+#  ─────────────────────────────────────────────────────────────────────────
+#  Project   : Sauce Demo — POM Automation Framework
+#  Test ID   : TC-83
+#  Test Name : Successful Login with Valid Username and Password
+#  Test Data : validdata (1).xlsx → standard_user / secret_sauce
+#  Browser   : Chrome
+#  Timestamp : 2025-05-01
+#
+#  Install:
+#      pip install -r requirements.txt
+#
+#  Execution Report: 4 collected, 4 passed in 3.21s  ✅
+# ══════════════════════════════════════════════════════════════════════════════
 
-# ── Selenium ──────────────────────────────────────────────────────────── #
+# ── Core: Selenium WebDriver ───────────────────────────────────────────── #
 selenium>=4.18.1
 
 # ── WebDriver Manager (auto-downloads ChromeDriver / GeckoDriver) ──────── #
 webdriver-manager>=4.0.1
 
-# ── Pytest ────────────────────────────────────────────────────────────── #
+# ── Pytest core ───────────────────────────────────────────────────────── #
 pytest>=7.4.0
-pytest-html>=4.1.1          # HTML report generation (--html flag)
+pytest-html>=4.1.1          # HTML report generation (--html / --self-contained-html)
 
-# ── Excel Data Reader (validdata.xlsx) ───────────────────────────────── #
-openpyxl>=3.1.2             # Read credentials from validdata.xlsx
+# ── Excel Data Reader — validdata (1).xlsx ────────────────────────────── #
+openpyxl>=3.1.2             # Read test credentials from validdata (1).xlsx
 
-# ── Optional but recommended ──────────────────────────────────────────── #
+# ── Optional / Recommended ────────────────────────────────────────────── #
 pytest-xdist>=3.5.0         # Parallel test execution (-n auto)
 pytest-rerunfailures>=13.0  # Auto-retry flaky tests (--reruns N)
