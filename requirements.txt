@@ -1,0 +1,32 @@
+# ===========================================================================
+# requirements.txt — TC-96: Forgot Password Link Visibility
+# Repository : madhaviRambhaTesting/SauceDemo
+# Branch     : qtestidscript
+# ===========================================================================
+
+# Core test framework
+pytest>=7.4.0
+
+# Selenium WebDriver
+selenium>=4.15.0
+
+# WebDriver auto-management (no manual chromedriver download needed)
+webdriver-manager>=4.0.0
+
+# pytest HTML report plugin
+pytest-html>=4.1.0
+
+# Allure report integration (optional, for richer CI reporting)
+allure-pytest>=2.13.2
+
+# pytest re-run on flaky tests
+pytest-rerunfailures>=12.0
+
+# Parallel test execution (optional)
+pytest-xdist>=3.3.1
+
+# Assertions / readability helpers
+assertpy>=1.1
+
+# Env variable management
+python-dotenv>=1.0.0
