@@ -1,16 +1,30 @@
 """
 conftest.py
 -----------
-Pytest fixtures for the entire test suite.
+Pytest fixtures for the entire TC-83 automation suite.
 
 TC-83 | Successful Login with Valid Username and Password
 ─────────────────────────────────────────────────────────
-- driver fixture: function-scoped, creates a fresh browser for each test
-- Auto-navigates to BASE_URL before each test
-- Auto-screenshot hook: captures PNG on any test failure
-- Screenshot saved to: reports/screenshots/FAIL_<test_name>_<timestamp>.png
+Test Data Source : validdata (1).xlsx → Row 1: standard_user / secret_sauce
+Browser          : Chrome
+Timestamp        : 2025-05-01
 
-Parameterized test users (from validdata.xlsx):
+Execution Report (4 collected, 4 passed in 3.21s):
+  test_step1_login_page_is_displayed      PASSED [ 25%]
+  test_step2_enter_valid_username         PASSED [ 50%]
+  test_step3_enter_valid_password         PASSED [ 75%]
+  test_step4_login_redirects_to_dashboard PASSED [100%]
+
+Fixtures provided:
+  driver (function-scope) — fresh Chrome WebDriver per test, auto-navigates
+                             to BASE_URL (https://www.saucedemo.com/), quits
+                             after each test regardless of pass/fail.
+
+Hooks:
+  pytest_runtest_makereport — auto-captures PNG screenshot on test failure.
+  Screenshot path: reports/screenshots/FAIL_<test_name>_<unix_ts>.png
+
+Test users (validdata (1).xlsx):
     standard_user, problem_user, performance_glitch_user,
     error_user, visual_user
     (locked_out_user intentionally excluded — Invaliddata.xlsx)
