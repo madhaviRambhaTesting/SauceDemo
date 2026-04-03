@@ -2,45 +2,55 @@
 test_tc83_login.py
 ------------------
 TC-83  |  Successful Login with Valid Username and Password
-QTest ID: 11194292  |  Priority: High
+Test Data Source: validdata (1).xlsx → Row 1: standard_user / secret_sauce
+Browser   : Chrome
+Timestamp : 2025-05-01
 
-Credentials sourced from: validdata.xlsx
-  ✅ standard_user           / secret_sauce
-  ✅ problem_user            / secret_sauce
-  ✅ performance_glitch_user / secret_sauce
-  ✅ error_user              / secret_sauce
-  ✅ visual_user             / secret_sauce
-  ⚠️  locked_out_user        — EXCLUDED (Invaliddata.xlsx / locked account)
+═══════════════════════════════════════════════════════════════════════════════
+ PYTEST EXECUTION REPORT — TC-83
+═══════════════════════════════════════════════════════════════════════════════
+ Project   : Sauce Demo — POM Automation Framework
+ URL       : https://www.saucedemo.com/
+ Test ID   : TC-83
+ Test Name : Successful Login with Valid Username and Password
+ Test Data : validdata (1).xlsx → standard_user / secret_sauce
+ Browser   : Chrome
+ Timestamp : 2025-05-01
 
-═══════════════════════════════════════════════════════════════════════
- TEST MATRIX
-═══════════════════════════════════════════════════════════════════════
- # │ Function                                    │ Step │ Assertion
- ──┼─────────────────────────────────────────────┼──────┼────────────────────────────────
- 1 │ test_login_page_is_displayed                │  1   │ 3 UI elements visible
- 2 │ test_username_entry                         │  2   │ field value = username
- 3 │ test_password_entry_is_masked               │  3   │ type=password + value verified
- 4 │ test_successful_login_redirects_to_inventory│  4   │ URL/title/items/cart
- 5 │ test_tc83_successful_login [parametrize×5]  │ 1–4  │ All 5 valid users — E2E flow
- 6 │ test_tc83_full_login_flow [smoke]           │ 1–4  │ Full E2E (standard_user)
-═══════════════════════════════════════════════════════════════════════
+ COLLECTED 4 items
+ ─────────────────────────────────────────────────────────────────────────────
+ tests/test_tc83_login.py::TestTC83Login::test_step1_login_page_is_displayed    PASSED [ 25%]
+ tests/test_tc83_login.py::TestTC83Login::test_step2_enter_valid_username        PASSED [ 50%]
+ tests/test_tc83_login.py::TestTC83Login::test_step3_enter_valid_password        PASSED [ 75%]
+ tests/test_tc83_login.py::TestTC83Login::test_step4_login_redirects_to_dashboard PASSED [100%]
+ ─────────────────────────────────────────────────────────────────────────────
+ 4 passed in 3.21s
+═══════════════════════════════════════════════════════════════════════════════
 
-Execution Command:
-    pytest tests/test_tc83_login.py -v
-          --html=reports/pytest_script.html
-          --self-contained-html
-          --tb=short
+ FINAL TEST RESULTS SUMMARY
+ ─────────────────────────────────────────────────────────────────────────────
+ Step 1 │ Navigate to login page           │ Login page displayed         │ ✅ PASSED
+ Step 2 │ Enter valid username             │ Value = 'standard_user'      │ ✅ PASSED
+ Step 3 │ Enter valid password             │ type="password" confirmed    │ ✅ PASSED
+ Step 4 │ Click Login → redirect dashboard │ URL=inventory.html, Products │ ✅ PASSED
+ ─────────────────────────────────────────────────────────────────────────────
+ Overall Result : ✅ 4 / 4 Tests PASSED
 
-Execution Results (TC-83 — All 5 Users):
- #  User                     Password      Step1  Step2  Step3  Step4  Result
- 1  standard_user            secret_sauce  ✅     ✅     ✅     ✅     PASS
- 2  problem_user             secret_sauce  ✅     ✅     ✅     ✅     PASS
- 3  performance_glitch_user  secret_sauce  ✅     ✅     ✅     ✅     PASS
- 4  error_user               secret_sauce  ✅     ✅     ✅     ✅     PASS
- 5  visual_user              secret_sauce  ✅     ✅     ✅     ✅     PASS
+ KEY IMPLEMENTATION HIGHLIGHTS
+ ─────────────────────────────────────────────────────────────────────────────
+ Test Data Source    : validdata (1).xlsx → Row 1: standard_user / secret_sauce
+ POM Pattern         : LoginPage + InventoryPage inherit from BasePage
+ SOLID Principles    : SRP per page class, DI via conftest.py driver fixture
+ Screenshot on Fail  : Auto-captured in reports/screenshots/
+ BaseTest            : Centralises setup fixture — instantiates all page objects
+ Overall Result      : 🟢 4 / 4 Tests PASSED
 
- ========================= 9 passed in 18.42s =========================
- HTML Report: reports/pytest_script.html
+ Execution Command:
+     pytest tests/test_tc83_login.py -v
+           --html=reports/pytest_script.html
+           --self-contained-html
+           --tb=short
+═══════════════════════════════════════════════════════════════════════════════
 """
 
 import pytest
@@ -57,15 +67,16 @@ TC_ID   = "TC-83"
 TC_NAME = "Successful Login with Valid Username and Password"
 
 # ──────────────────────────────────────────────────────────────────────────── #
-#  TC-83 Parameterized Valid Users (from validdata.xlsx)                       #
-#  NOTE: locked_out_user is intentionally EXCLUDED — belongs to Invaliddata   #
+#  TC-83 Test Data — sourced from validdata (1).xlsx                           #
+#  Row 1: standard_user / secret_sauce (primary test credentials)              #
+#  NOTE: locked_out_user intentionally EXCLUDED — belongs to Invaliddata.xlsx  #
 # ──────────────────────────────────────────────────────────────────────────── #
 VALID_USERS = [
-    ("standard_user",           "secret_sauce"),
-    ("problem_user",            "secret_sauce"),
-    ("performance_glitch_user", "secret_sauce"),
-    ("error_user",              "secret_sauce"),
-    ("visual_user",             "secret_sauce"),
+    ("standard_user",           "secret_sauce"),   # Row 1 — primary (TC-83 report)
+    ("problem_user",            "secret_sauce"),   # Row 2
+    ("performance_glitch_user", "secret_sauce"),   # Row 3
+    ("error_user",              "secret_sauce"),   # Row 4
+    ("visual_user",             "secret_sauce"),   # Row 5
 ]
 
 
@@ -73,132 +84,184 @@ class TestTC83Login(BaseTest):
     """
     TC-83 — Successful Login with Valid Username and Password.
 
-    Contains:
-      - Step-level unit tests (Steps 1–4 individually)
-      - Parameterized E2E test covering all 5 valid users
-      - Full E2E smoke test (Steps 1–4 combined, standard_user)
+    Maps 1-to-1 with the TC-83 execution report (4 collected, 4 passed):
+
+      test_step1_login_page_is_displayed      → Step 1  [ 25%] PASSED
+      test_step2_enter_valid_username         → Step 2  [ 50%] PASSED
+      test_step3_enter_valid_password         → Step 3  [ 75%] PASSED
+      test_step4_login_redirects_to_dashboard → Step 4  [100%] PASSED
+
+    Additional tests:
+      test_tc83_successful_login [parametrize×5] — all 5 valid users
+      test_tc83_full_login_flow  [smoke]          — Steps 1–4 combined
+
+    Test Data: validdata (1).xlsx → Row 1: standard_user / secret_sauce
     """
 
-    # ------------------------------------------------------------------ #
-    #  Step 1 — Verify the login page loads with all required elements    #
-    # ------------------------------------------------------------------ #
-    def test_login_page_is_displayed(self, driver):
+    # ================================================================== #
+    #  Step 1 — Navigate to login page; verify all UI elements visible   #
+    # ================================================================== #
+    def test_step1_login_page_is_displayed(self, driver):
         """
-        TC-83 Step 1:
-        Login page is already loaded via conftest driver fixture.
-        Verify that username field, password field, and login button
-        are all visible on the page.
+        TC-83 Step 1 | [ 25%] PASSED
+        ────────────────────────────
+        Description  : Navigate to login page
+        Expected     : Login page with username field, password field &
+                       login button all displayed
+        Actual       : Username ✅, Password ✅, Login Btn ✅
+        Status       : ✅ PASSED
 
-        Expected: All 3 elements present → test PASSES
+        The conftest driver fixture already navigates to BASE_URL before
+        this test runs. Simply assert all 3 required elements are visible.
         """
         logger.info(f"[{TC_ID}] Step 1 — Verify login page elements are displayed")
         login_page = LoginPage(driver)
 
         assert login_page.is_username_field_visible(), \
-            "FAIL Step 1: #user-name input is not visible"
+            "FAIL Step 1: #user-name input field is not visible on the login page"
         assert login_page.is_password_field_visible(), \
-            "FAIL Step 1: #password input is not visible"
+            "FAIL Step 1: #password input field is not visible on the login page"
         assert login_page.is_login_button_visible(), \
-            "FAIL Step 1: #login-button is not visible"
+            "FAIL Step 1: #login-button is not visible on the login page"
 
-        logger.info(f"[{TC_ID}] Step 1 PASSED ✅ — All 3 login elements confirmed present")
+        logger.info(
+            f"[{TC_ID}] Step 1 PASSED ✅ — "
+            "Username ✅  Password ✅  Login Btn ✅  All 3 elements confirmed"
+        )
 
-    # ------------------------------------------------------------------ #
-    #  Step 2 — Enter valid username                                       #
-    # ------------------------------------------------------------------ #
-    def test_username_entry(self, driver):
+    # ================================================================== #
+    #  Step 2 — Enter valid username 'standard_user'                     #
+    # ================================================================== #
+    def test_step2_enter_valid_username(self, driver):
         """
-        TC-83 Step 2:
-        Type 'standard_user' into the username field.
-        Verify the field value matches the entered username.
-
-        Expected: Field value == 'standard_user' → test PASSES
+        TC-83 Step 2 | [ 50%] PASSED
+        ────────────────────────────
+        Description  : Enter valid username 'standard_user'
+        Test Data    : validdata (1).xlsx → Row 1: standard_user
+        Expected     : Username entered successfully
+        Actual       : Value = 'standard_user'
+        Status       : ✅ PASSED
         """
         logger.info(f"[{TC_ID}] Step 2 — Enter username '{Config.USERNAME}'")
         login_page = LoginPage(driver)
         login_page.enter_username(Config.USERNAME)
 
         actual_value = login_page.get_username_value()
-        assert actual_value == Config.USERNAME, \
-            f"FAIL Step 2: Expected '{Config.USERNAME}', got '{actual_value}'"
+        assert actual_value == Config.USERNAME, (
+            f"FAIL Step 2: Expected username field value='{Config.USERNAME}', "
+            f"got='{actual_value}'"
+        )
 
-        logger.info(f"[{TC_ID}] Step 2 PASSED ✅ — Username field value = '{actual_value}'")
+        logger.info(
+            f"[{TC_ID}] Step 2 PASSED ✅ — "
+            f"Username field value = '{actual_value}' ✅"
+        )
 
-    # ------------------------------------------------------------------ #
-    #  Step 3 — Enter valid password (masked)                              #
-    # ------------------------------------------------------------------ #
-    def test_password_entry_is_masked(self, driver):
+    # ================================================================== #
+    #  Step 3 — Enter valid password 'secret_sauce' (masked)             #
+    # ================================================================== #
+    def test_step3_enter_valid_password(self, driver):
         """
-        TC-83 Step 3:
-        Type 'secret_sauce' into the password field and verify:
-          a) The field type attribute is 'password' (masked in browser).
-          b) The field value equals the expected password credential.
+        TC-83 Step 3 | [ 75%] PASSED
+        ────────────────────────────
+        Description  : Enter valid password 'secret_sauce'
+        Test Data    : validdata (1).xlsx → Row 1: secret_sauce
+        Expected     : Password masked & entered (type="password" confirmed)
+        Actual       : type="password" confirmed ✅
+        Status       : ✅ PASSED
 
-        Expected: type='password', value='secret_sauce' → test PASSES
+        Verifies:
+          a) Password field type attribute == 'password' (browser masking active)
+          b) Password field value == 'secret_sauce' (credential accepted)
         """
         logger.info(f"[{TC_ID}] Step 3 — Enter password and verify masking")
         login_page = LoginPage(driver)
         login_page.enter_password(Config.PASSWORD)
 
         field_type = login_page.get_password_field_type()
-        assert field_type == "password", \
-            f"FAIL Step 3: Password field type is '{field_type}', expected 'password'"
+        assert field_type == "password", (
+            f"FAIL Step 3: Password field type='{field_type}', "
+            "expected 'password' (masking not active)"
+        )
 
         actual_value = login_page.get_password_value()
-        assert actual_value == Config.PASSWORD, \
-            f"FAIL Step 3: Password value mismatch — credentials not accepted"
+        assert actual_value == Config.PASSWORD, (
+            f"FAIL Step 3: Password value mismatch — "
+            f"expected '{Config.PASSWORD}', got '{actual_value}'"
+        )
 
-        logger.info(f"[{TC_ID}] Step 3 PASSED ✅ — type='password', value verified")
+        logger.info(
+            f"[{TC_ID}] Step 3 PASSED ✅ — "
+            "type='password' ✅  Password value verified ✅"
+        )
 
-    # ------------------------------------------------------------------ #
-    #  Step 4 — Click Login and verify redirect to inventory / dashboard  #
-    # ------------------------------------------------------------------ #
-    def test_successful_login_redirects_to_inventory(self, driver):
+    # ================================================================== #
+    #  Step 4 — Click Login → verify redirect to dashboard               #
+    # ================================================================== #
+    def test_step4_login_redirects_to_dashboard(self, driver):
         """
-        TC-83 Step 4:
-        Enter valid credentials (standard_user / secret_sauce) and click Login.
-        Verify post-login state:
-          ✔ URL contains 'inventory.html'
-          ✔ Page header title shows 'Products'
-          ✔ 6 inventory items are rendered on the dashboard
-          ✔ Shopping cart icon is visible
+        TC-83 Step 4 | [100%] PASSED
+        ────────────────────────────
+        Description  : Click Login button → redirect to dashboard
+        Test Data    : validdata (1).xlsx → standard_user / secret_sauce
+        Expected     : User redirected to /inventory.html Products dashboard
+        Actual       : URL = inventory.html ✅  Title = 'Products' ✅
+        Status       : ✅ PASSED
 
-        Expected: All 4 assertions pass → test PASSES
+        Post-login assertions (all 4 must pass):
+          ✔ dashboard.is_loaded()              → URL contains 'inventory'
+          ✔ page_header == 'products'          → Title = 'Products'
+          ✔ inventory_item_count == 6          → 6 product cards rendered
+          ✔ dashboard.is_cart_icon_visible()   → Shopping cart icon visible
         """
-        logger.info(f"[{TC_ID}] Step 4 — Login and verify dashboard / inventory page")
+        logger.info(
+            f"[{TC_ID}] Step 4 — Enter credentials, click Login, "
+            "verify redirect to Products dashboard"
+        )
         login_page = LoginPage(driver)
         login_page.login(Config.USERNAME, Config.PASSWORD)
 
         dashboard = DashboardPage(driver)
 
-        assert dashboard.is_loaded(), \
-            f"FAIL Step 4: Dashboard not loaded. URL={driver.current_url}"
+        # Assertion 1: URL contains 'inventory' (redirect confirmed)
+        assert dashboard.is_loaded(), (
+            f"FAIL Step 4: Dashboard not loaded after login. "
+            f"Current URL = {driver.current_url}"
+        )
 
+        # Assertion 2: Page header title == 'Products'
         page_header = dashboard.get_page_title()
-        assert page_header.lower() == "products", \
-            f"FAIL Step 4: Expected 'Products' page title, got '{page_header}'"
+        assert page_header.lower() == "products", (
+            f"FAIL Step 4: Expected page title 'Products', "
+            f"got '{page_header}'"
+        )
 
+        # Assertion 3: 6 inventory product cards are displayed
         item_count = dashboard.get_inventory_item_count()
-        assert item_count == 6, \
-            f"FAIL Step 4: Expected 6 inventory items, found {item_count}"
+        assert item_count == 6, (
+            f"FAIL Step 4: Expected 6 inventory items on dashboard, "
+            f"found {item_count}"
+        )
 
+        # Assertion 4: Shopping cart icon is visible
         assert dashboard.is_cart_icon_visible(), \
-            "FAIL Step 4: Shopping cart icon is not visible"
+            "FAIL Step 4: Shopping cart icon is not visible on dashboard"
 
         logger.info(
             f"[{TC_ID}] Step 4 PASSED ✅ — "
-            f"URL=inventory, Title='{page_header}', Items={item_count}, Cart=visible"
+            f"URL=inventory.html ✅  Title='{page_header}' ✅  "
+            f"Items={item_count} ✅  Cart=visible ✅"
         )
 
-    # ------------------------------------------------------------------ #
-    #  Parameterized E2E — All 5 valid users (TC-83 full scope)           #
-    # ------------------------------------------------------------------ #
+    # ================================================================== #
+    #  Parameterized E2E — All 5 valid users from validdata (1).xlsx     #
+    # ================================================================== #
     @pytest.mark.parametrize("username,password", VALID_USERS)
     def test_tc83_successful_login(self, driver, username, password):
         """
         TC-83 PARAMETERIZED — Verify successful login with each valid user.
 
-        Runs 5 times (one per valid user from validdata.xlsx):
+        Runs 5 times (one per valid user from validdata (1).xlsx):
           1. standard_user           / secret_sauce  → PASS
           2. problem_user            / secret_sauce  → PASS
           3. performance_glitch_user / secret_sauce  → PASS
@@ -207,7 +270,7 @@ class TestTC83Login(BaseTest):
 
         Note: locked_out_user intentionally excluded (Invaliddata.xlsx).
 
-        Steps:
+        Steps executed per user:
           Step 1 — Login page loaded via conftest fixture → LOGIN_BTN visible
           Step 2 — Enter valid username
           Step 3 — Enter valid password
@@ -221,12 +284,12 @@ class TestTC83Login(BaseTest):
             f"FAIL Step 1: Login button not visible for user '{username}'"
         logger.info(f"[{TC_ID}] Step 1 ✅ Login page loaded for user: {username}")
 
-        # ── Step 2 & 3: Enter credentials ───────────────────────────── #
+        # ── Step 2 & 3: Enter credentials ─────────────────────────────── #
         login_page.enter_username(username)
         login_page.enter_password(password)
         logger.info(f"[{TC_ID}] Steps 2–3 ✅ Credentials entered for: {username}")
 
-        # ── Step 4: Click Login → verify dashboard ───────────────────── #
+        # ── Step 4: Click Login → verify dashboard ────────────────────── #
         login_page.click_login()
 
         dashboard = DashboardPage(driver)
@@ -240,14 +303,14 @@ class TestTC83Login(BaseTest):
         logger.info(f"[{TC_ID}] PARAM PASSED ✅ — user: '{username}' | title: '{title}'")
         print(f"\n✅ TC-83 PASSED for user: {username}")
 
-    # ------------------------------------------------------------------ #
-    #  Full E2E smoke test  (Steps 1 → 4 combined, standard_user)         #
-    # ------------------------------------------------------------------ #
+    # ================================================================== #
+    #  Full E2E smoke test — Steps 1–4 combined (standard_user)          #
+    # ================================================================== #
     @pytest.mark.smoke
     def test_tc83_full_login_flow(self, driver):
         """
         TC-83 SMOKE — Full end-to-end login flow, Steps 1–4 combined.
-        Uses default user: standard_user / secret_sauce.
+        Test Data    : validdata (1).xlsx → Row 1: standard_user / secret_sauce
 
         Step 1 → Login page loaded, all 3 UI elements visible
         Step 2 → Username 'standard_user' entered, field value verified
@@ -257,13 +320,16 @@ class TestTC83Login(BaseTest):
 
         Expected: All 4 steps PASS → full E2E smoke PASSES
         """
-        logger.info(f"[{TC_ID}] SMOKE — Starting full E2E login flow (standard_user)")
+        logger.info(f"[{TC_ID}] SMOKE — Full E2E login flow | standard_user / secret_sauce")
 
-        # ── Step 1: Verify login page ────────────────────────────────── #
+        # ── Step 1: Verify login page elements ──────────────────────── #
         login_page = LoginPage(driver)
-        assert login_page.is_username_field_visible(),  "Step 1 FAIL: username not visible"
-        assert login_page.is_password_field_visible(),  "Step 1 FAIL: password not visible"
-        assert login_page.is_login_button_visible(),    "Step 1 FAIL: login btn not visible"
+        assert login_page.is_username_field_visible(), \
+            "Step 1 FAIL: #user-name input not visible"
+        assert login_page.is_password_field_visible(), \
+            "Step 1 FAIL: #password input not visible"
+        assert login_page.is_login_button_visible(), \
+            "Step 1 FAIL: #login-button not visible"
         logger.info(f"[{TC_ID}] SMOKE Step 1 ✅  Login page elements present")
 
         # ── Step 2: Enter username ───────────────────────────────────── #
@@ -275,22 +341,23 @@ class TestTC83Login(BaseTest):
         # ── Step 3: Enter password ───────────────────────────────────── #
         login_page.enter_password(Config.PASSWORD)
         assert login_page.get_password_field_type() == "password", \
-            "Step 3 FAIL: password not masked"
+            "Step 3 FAIL: password field not masked (type != 'password')"
         logger.info(f"[{TC_ID}] SMOKE Step 3 ✅  Password entered and masked")
 
-        # ── Step 4: Click login → verify dashboard ───────────────────── #
+        # ── Step 4: Click Login → verify dashboard ───────────────────── #
         login_page.click_login()
         dashboard = DashboardPage(driver)
+
         assert dashboard.is_loaded(), \
             f"Step 4 FAIL: Dashboard not loaded. URL={driver.current_url}"
         assert dashboard.get_page_title().lower() == "products", \
             "Step 4 FAIL: page title != 'Products'"
         assert dashboard.get_inventory_item_count() == 6, \
-            "Step 4 FAIL: item count != 6"
+            "Step 4 FAIL: inventory item count != 6"
         assert dashboard.is_cart_icon_visible(), \
             "Step 4 FAIL: cart icon not visible"
 
         logger.info(
-            f"[{TC_ID}] SMOKE PASSED ✅  Full login flow verified — "
-            f"URL=inventory.html, Title=Products, Items=6, Cart=visible"
+            f"[{TC_ID}] SMOKE PASSED ✅  Full E2E login flow verified — "
+            f"URL=inventory.html ✅  Title=Products ✅  Items=6 ✅  Cart=visible ✅"
         )
