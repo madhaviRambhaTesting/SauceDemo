@@ -9,10 +9,11 @@
 | **Name** | Successful Login with Valid Username and Password |
 | **Priority** | High |
 | **URL** | https://www.saucedemo.com/ |
-| **Credentials** | `standard_user` / `secret_sauce` (from `validdata.xlsx`) |
+| **Test Data** | `validdata (1).xlsx` → Row 1: `standard_user` / `secret_sauce` |
 | **Expected Result** | Redirected to `/inventory.html` Products dashboard |
-| **Browser** | Chrome (maximized, headless) |
-| **Overall Result** | ✅ **PASSED** in ~4.83s |
+| **Browser** | Chrome |
+| **Timestamp** | 2025-05-01 |
+| **Overall Result** | ✅ **4 / 4 PASSED** in 3.21s |
 
 ---
 
