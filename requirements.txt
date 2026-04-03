@@ -1,0 +1,22 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# requirements.txt
+# TC-96 | QTest ID: 11194308
+# Test Case: Forgot Password Link is Visible on the Login Page
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Core test automation
+selenium>=4.18.1
+pytest>=8.1.1
+pytest-html>=4.1.1
+
+# WebDriver management (auto-downloads the correct ChromeDriver)
+webdriver-manager>=4.0.1
+
+# Optional: parallel test execution
+pytest-xdist>=3.5.0
+
+# Optional: retry flaky tests
+pytest-rerunfailures>=13.0
+
+# Optional: test ordering
+pytest-ordering>=0.6
